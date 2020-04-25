@@ -86,8 +86,9 @@ function initial_checks(){
 	}
 
 	if(targetItemCount == null){
-		console.log("Please provide the number of images you want to download");
-		return false;
+		console.log("Downloading by default 10 images");
+		// return false;
+		targetItemCount = 10;
 	}
 
 	targetItemCount = parseInt(targetItemCount, 10);
