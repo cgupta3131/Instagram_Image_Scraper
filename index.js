@@ -185,15 +185,13 @@ app.post("/",function(req,res){
 		targetItemCount = 10;
 	}
 
-	cur_username = "nandini290000@gmail.com";
-	cur_password = "Kaiyan@01";
-	find_username = "viral.kohli";
+	
 	targetItemCount = 3;
 
 	console.log("Download Started");
 	main();
 	console.log("Download Ended");
-	
+
     res.redirect("/");
 });
 
