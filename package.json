@@ -18,7 +18,11 @@
   },
   "homepage": "https://github.com/cgupta3131/Instagram_Image_Scraper#readme",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "cheerio": "^1.0.0-rc.3",
+    "ejs": "^3.1.2",
+    "express": "^4.17.1",
+    "mkdirp": "^1.0.4",
     "puppeteer": "^3.0.0",
     "request": "^2.88.2"
   }

@@ -1,12 +1,22 @@
-const puppeteer = require('puppeteer');
-const cheerio = require("cheerio");
-const request = require('request');
-const fs = require('fs');
+var puppeteer = require('puppeteer');
+var cheerio = require("cheerio");
+var request = require('request');
+var fs = require('fs');
+var mkdirp = require('mkdirp');
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+
 
 var cur_username;
 var cur_password;
 var find_username;
 var targetItemCount;
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static("public"));
+app.set("view engine", "ejs");
+
 
 var download = function(uri, filename, callback){
   request.head(uri, function(err, res, body){
@@ -17,8 +27,7 @@ var download = function(uri, filename, callback){
   });
 };
 
-function extractItems()
-{
+function extractItems(){
 	const extractedItems = Array.from(
 		document.querySelectorAll("img.FFVAD[src]")
 		);
@@ -98,9 +107,10 @@ function initial_checks(){
 
 async function main() {
     
-    if(initial_checks() == false)
-    	return;
+    /*if(initial_checks() == false)
+    	return;*/
 	
+
 
 	const browser = await puppeteer.launch({
     	headless: false,
@@ -141,18 +151,53 @@ async function main() {
 	var iter = Math.min(Number(targetItemCount), Number(imgs.length));
 
 	//Creating new Directory if ./photos does not exist
-	var dir = './photos/';
+	var dir = '/home/cgupta3131/Downloads/photos/';
 	if (!fs.existsSync(dir)){
 		console.log("Creating new directory!");
 	    fs.mkdirSync(dir);
 	}
 
+
 	for(var i=0;i<iter;i++){
 		var url = imgs[i];
-		var file_name = "./photos/" + find_username + (i+1);
+		var file_name = dir + find_username + "-" + (i+1);
 		download(url,file_name,function(){});
 		console.log(file_name);
 	}
+
+	console.log("DOWNLOAD COMPLETE");
+	browser.close();
 };
 
-main();
+
+app.get("/",function(req,res){
+    res.render("mainpage");
+});
+
+app.post("/",function(req,res){
+
+	cur_username = req.body.username1;
+	cur_password = req.body.password;
+	find_username = req.body.username2;
+	targetItemCount = parseInt(req.body.count_images, 10);
+
+	if(isNaN(targetItemCount)){
+		targetItemCount = 10;
+	}
+
+	cur_username = "nandini290000@gmail.com";
+	cur_password = "Kaiyan@01";
+	find_username = "viral.kohli";
+	targetItemCount = 3;
+
+	console.log("Download Started");
+	main();
+	console.log("Download Ended");
+	
+    res.redirect("/");
+});
+
+app.listen(3000,function(){
+    console.log("Server started at port 3000");
+});
+
