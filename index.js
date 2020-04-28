@@ -72,46 +72,9 @@ async function scrapeInfiniteScrollItems(page,extractItems,targetItemCount,scrol
 	return items;
 }
 
+async function main(res) {
 
-function initial_checks(){
-	cur_username = process.argv[2];
-	cur_password = process.argv[3];
-	find_username = process.argv[4];
-	targetItemCount = process.argv[5];
-
-	if(cur_username == null){
-		console.log("Please provide your username");
-		return false;
-	}
-
-	if(cur_password == null){
-		console.log("Please provide your password");
-		return false;
-	}
-
-	if(find_username == null){
-		console.log("Please provide username of the account for which you want images ");
-		return false;
-	}
-
-	if(targetItemCount == null){
-		console.log("Downloading by default 10 images");
-		// return false;
-		targetItemCount = 10;
-	}
-
-	targetItemCount = parseInt(targetItemCount, 10);
-
-	return true;
-}
-
-async function main() {
-    
-    /*if(initial_checks() == false)
-    	return;*/
 	
-
-
 	const browser = await puppeteer.launch({
     	headless: false,
     	defaultViewport: null, 
@@ -150,13 +113,12 @@ async function main() {
 
 	var iter = Math.min(Number(targetItemCount), Number(imgs.length));
 
-	//Creating new Directory if ./photos does not exist
+	//Creating new Directory if it does not exist
 	var dir = '/home/cgupta3131/Downloads/photos/';
 	if (!fs.existsSync(dir)){
 		console.log("Creating new directory!");
 	    fs.mkdirSync(dir);
 	}
-
 
 	for(var i=0;i<iter;i++){
 		var url = imgs[i];
@@ -167,6 +129,8 @@ async function main() {
 
 	console.log("DOWNLOAD COMPLETE");
 	browser.close();
+
+	res.redirect("/");
 };
 
 
@@ -185,14 +149,11 @@ app.post("/",function(req,res){
 		targetItemCount = 10;
 	}
 
-	
-	targetItemCount = 3;
+	/*cur_username = "nandini290000@gmail.com";
+	cur_password = "----";
+	find_username = "virat.kohli";*/
 
-	console.log("Download Started");
-	main();
-	console.log("Download Ended");
-
-    res.redirect("/");
+	main(res);
 });
 
 app.listen(3000,function(){
